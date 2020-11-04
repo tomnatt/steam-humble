@@ -1,24 +1,18 @@
-# README
+# Steam Humble connection
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+App designed to give a complete list of all games in the Humble Monthly / Choice bundles and their Steam tags. Primary goal is to be able to find games which are co-op.
 
-Things you may want to cover:
+Written with Ruby 2.5.1 in mind and using Postgres.
 
-* Ruby version
+To set up and run, clone the code then:
 
-* System dependencies
+```
+bundle install
+bundle exec rake db:migrate
+bundle exec rails s
+```
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+To run the tests:
+```
+bundle exec rspec
+```
