@@ -1,5 +1,6 @@
 require 'rails_helper'
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe Game, type: :model do
   it 'must have an appid' do
     game = build(:game, steam_appid: 32)
@@ -36,3 +37,4 @@ RSpec.describe Game, type: :model do
     expect(game).to_not be_valid
   end
 end
+# rubocop:enable Metrics/BlockLength
