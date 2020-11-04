@@ -9,7 +9,20 @@
     <%= javascript_pack_tag 'application' %>
   </head>
 
-  <body>
+  <body class="container">
+    <%- if notice || alert -%>
+    <div class="row">
+      <div class="col">
+        <%- if notice -%>
+        <p class="alert alert-info"><%= notice %></p>
+        <%- end -%>
+        <%- if alert -%>
+        <p class="alert alert-warning"><%= alert %></p>
+        <%- end -%>
+      </div>
+    </div>
+    <%- end -%>
+
     <%= yield %>
   </body>
 </html>

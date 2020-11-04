@@ -1,10 +1,3 @@
-<p id="notice"><%= notice %></p>
-
-<p>
-  <strong>Steam appid:</strong>
-  <%= @game.steam_appid %>
-</p>
-
 <p>
   <strong>Game name:</strong>
   <%= @game.game_name %>
@@ -15,5 +8,15 @@
   <%= @game.humble_bundle %>
 </p>
 
-<%= link_to 'Edit', edit_game_path(@game) %> |
-<%= link_to 'Back', games_path %>
+<p>
+  <strong>Steam appid:</strong>
+  <%= @game.steam_appid %>
+</p>
+
+<p>
+  <%= link_to 'Edit', edit_game_path(@game) %> |
+  <%= link_to 'Back', games_path %>
+</p>
+<p>
+  <%= link_to 'Add another game', new_game_path %>
+</p>
