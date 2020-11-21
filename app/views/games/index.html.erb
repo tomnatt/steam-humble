@@ -1,31 +1,33 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <div class="col">
+    <h1>All games</h1>
 
-<h1>Games</h1>
+    <p class="lead">Please <%= link_to 'add a game', new_game_path, id: 'add-game' %></p>
+  </div>
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Steam appid</th>
-      <th>Game name</th>
-      <th>Humble bundle</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @games.each do |game| %>
+<div class="row">
+  <table class="col table">
+    <thead>
       <tr>
-        <td><%= game.steam_appid %></td>
-        <td><%= game.game_name %></td>
-        <td><%= game.humble_bundle %></td>
-        <td><%= link_to 'Show', game %></td>
-        <td><%= link_to 'Edit', edit_game_path(game) %></td>
-        <td><%= link_to 'Destroy', game, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <th>Game name</th>
+        <th>Month</th>
+        <th>Steam ID</th>
+        <th colspan="3"></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
 
-<br>
-
-<%= link_to 'New Game', new_game_path %>
+    <tbody>
+      <% @games.each do |game| %>
+        <tr>
+          <td><%= game.game_name %></td>
+          <td><%= game.humble_bundle %></td>
+          <td><%= game.steam_appid %></td>
+          <td><%= link_to 'Show', game %></td>
+          <td><%= link_to 'Edit', edit_game_path(game) %></td>
+          <td><%= link_to 'Destroy', game, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
