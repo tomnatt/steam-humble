@@ -1,23 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe 'Games', type: :request do
-  it 'creates a Game and redirects to the Game page' do
-    get '/games/new'
-    expect(response).to render_template(:new)
+  it 'returns a successful response for the index page' do
+    get games_path
+    expect(response).to be_successful
 
-    post '/games', params: { game: { steam_appid:   928,
-                                     game_name:     'Controller spec',
-                                     humble_bundle: '2020-05-01' } }
-
-    expect(response).to redirect_to(assigns(:game))
-    follow_redirect!
-
-    expect(response).to render_template(:show)
-    expect(response.body).to include('Game was successfully created.')
+    # TODO: refactor these to a Capybara test
+    expect(response.body).to include('All games')
+    expect(response.body).to include('add a game')
   end
 
-  it 'does not render a different template' do
-    get '/games/new'
-    expect(response).to_not render_template(:show)
+  it 'responds properly to a form request' do
+    get new_game_path
+    expect(response).to be_successful
   end
 end
