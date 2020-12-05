@@ -10,8 +10,16 @@ RSpec.describe 'Games', type: :request do
     expect(response.body).to include('add a game')
   end
 
-  it 'responds properly to a form request' do
+  it 'returns a succesful response for the new game page' do
     get new_game_path
+    expect(response).to be_successful
+  end
+
+  it 'returns a succesful response for the edit game page' do
+    game = build(:game)
+    game.save!
+
+    get edit_game_path(game.id)
     expect(response).to be_successful
   end
 end
