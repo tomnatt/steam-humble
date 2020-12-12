@@ -1,7 +1,8 @@
+require "date"
+require "google_drive"
 require "json"
 require "open-uri"
-require "google_drive"
-require "date"
+
 
 def pull_steam_app_db
   uri = 'http://api.steampowered.com/ISteamApps/GetAppList/v0002/'
