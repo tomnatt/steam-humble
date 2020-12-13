@@ -11,9 +11,39 @@
     </div>
   <% end %>
 
+  <div class="row mb-3">
+    <div class="col">
+      <div class="form-group">
+        <%= form.label :game_name %>
+        <%= form.text_field :game_name, class: 'form-control' %>
+        <small id="captionHelp" class="form-text text-muted">The name of the game on Steam</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col">
+      <div class="form-group">
+        <%= form.label :humble_bundle %>
+        <%= form.date_select :humble_bundle, { prompt: true }, { class: 'custom-select'} %>
+        <small id="captionHelp" class="form-text text-muted">The monthly Humble Choice bundle</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col">
+      <div class="form-group">
+        <%= form.label :steam_appid %>
+        <%= form.number_field :steam_appid, class: 'form-control' %>
+        <small id="captionHelp" class="form-text text-muted">The unique ID for the game on Steam</small>
+      </div>
+    </div>
+  </div>
+
   <div class="actions row">
     <div class="col">
-      <%= form.submit 'Update database', class: 'btn btn-primary' %>
+      <%= form.submit 'Save my game', class: 'btn btn-primary' %>
     </div>
   </div>
 <% end %>
