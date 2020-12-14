@@ -1,5 +1,5 @@
 class GamesController < ApplicationController
-  before_action :set_game, only: [:show, :edit, :update, :destroy]
+  before_action :set_game, only: [:show, :edit, :update, :destroy, :update_local_db]
 
   # GET /games
   # GET /games.json
@@ -59,6 +59,11 @@ class GamesController < ApplicationController
     end
   end
 
+  # GET /games/update
+  def update_db
+    @game = Game.new
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -70,4 +75,6 @@ class GamesController < ApplicationController
   def game_params
     params.require(:game).permit(:steam_appid, :game_name, :humble_bundle)
   end
+
+  helper_method :update_db
 end
