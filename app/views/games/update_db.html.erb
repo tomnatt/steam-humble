@@ -1,13 +1,33 @@
 <div class="row">
   <div class="col">
-    <h1>New Game</h1>
+    <h1>All games</h1>
+    <p class="lead">Manually <%= link_to 'add game', new_game_path, id: 'add-game' %></p>
+    <p class="lead">Auto-update <%= link_to 'database', update_db_games_path, id: 'update-db' %></p>
   </div>
 </div>
 
-<%= render 'form', game: @game %>
-
 <div class="row">
-  <p class="col">
-    <%= link_to 'Back', games_path %>
-  </p>
+  <table class="col table">
+    <thead>
+      <tr>
+        <th>Game name</th>
+        <th>Month</th>
+        <th>Steam ID</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @games.each do |game| %>
+        <tr>
+          <td><%= game.game_name %></td>
+          <td><%= game.humble_bundle %></td>
+          <td><%= game.steam_appid %></td>
+          <td><%= link_to 'Show', game %></td>
+          <td><%= link_to 'Edit', edit_game_path(game) %></td>
+          <td><%= link_to 'Destroy', game, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>

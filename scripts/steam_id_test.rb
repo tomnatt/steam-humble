@@ -27,7 +27,6 @@ def pull_humble_database
   humble_spreadsheet = "1Y5ySEXPLZdmKFNdMOrGlCEVl6nb_G0X3nYCFSWIdktY"
   ws = session.spreadsheet_by_key(humble_spreadsheet).worksheets[0]
 
-  srand(777)
   game_data = []
 
   (2..ws.num_rows).each do |row|
@@ -39,13 +38,13 @@ def pull_humble_database
 
     if early_unlock.size > 1
       (0..early_unlock.size-1).each do |game|
-        steam_appid = (rand() * 10000).to_i
+        steam_appid = 1
         game = early_unlock[game]
         game_data.push({date: date, game: game, steam_appid: steam_appid})
       end
 
     else
-      steam_appid = (rand() * 10000).to_i
+      steam_appid = 1
       game = early_unlock[0]
       game_data.push({date: date, game: game, steam_appid: steam_appid})
     end
@@ -55,13 +54,13 @@ def pull_humble_database
 
     if other_games.size > 1
       (0..other_games.size-1).each do |game|
-        steam_appid = (rand() * 10000).to_i
+        steam_appid = 1
         game = other_games[game]
         game_data.push({date: date, game: game, steam_appid: steam_appid})
       end
 
     else
-      steam_appid = (rand() * 10000).to_i
+      steam_appid = 1
       game = other_games[0]
       game_data.push({date: date, game: game, steam_appid: steam_appid})
     end
@@ -71,14 +70,14 @@ def pull_humble_database
 
     if humble_origs.size > 1
       (0..humble_origs.size-1).each do |game|
-        steam_appid = (rand() * 10000).to_i
+        steam_appid = 1
         game = humble_origs[game]
         game_data.push({date: date, game: game, steam_appid: steam_appid})
       end
 
     elsif humble_origs.size == 1 && humble_origs[0] = "N/A" # skips bundles with no originals
     else
-      steam_appid = (rand() * 10000).to_i
+      steam_appid = 1
       game = humble_origs[0]
       game_data.push({date: date, game: game, steam_appid: steam_appid})
     end
