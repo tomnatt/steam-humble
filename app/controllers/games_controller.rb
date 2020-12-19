@@ -64,15 +64,17 @@ class GamesController < ApplicationController
     end
   end
 
-  # def destroy_all
-  #   @games.destroy_all
-  #   @games = Game.all
-  # end
+  # GET /games/destroy_db
+  def destroy_db
+    @games = Game.all
+    @games.destroy_all
+    redirect_to games_url
+  end
 
-  # GET /games/update
+  # GET /games/update_db
   def update_db
     cycle_through_humble_database_worksheets()
-    @games = Game.all
+    redirect_to games_url
   end
 
   private
@@ -122,8 +124,13 @@ class GamesController < ApplicationController
 
       (0..early_unlock.size-1).each do |item|
         humble_game_name = early_unlock[item]
-        steam_id = (rand() * 10000).to_i
+        steam_id = 1
         steam_id = steam_hash_db[humble_game_name]
+
+        if steam_id == 1
+          steam_id = (rand() * 10000).to_s
+        end
+
         @game = Game.new(game_name: humble_game_name, humble_bundle: date, steam_appid: steam_id)
         @game.save
       end

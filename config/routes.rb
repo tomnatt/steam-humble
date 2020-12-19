@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :games do
     collection do
       get 'update_db'
+      get 'destroy_db'
     end
   end
 

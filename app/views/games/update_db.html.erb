@@ -3,6 +3,7 @@
     <h1>All games</h1>
     <p class="lead">Manually <%= link_to 'add game', new_game_path, id: 'add-game' %></p>
     <p class="lead">Auto-update <%= link_to 'database', update_db_games_path, id: 'update-db' %></p>
+    <p class="lead">Destroy all <%= link_to 'database', destroy_db_games_path, id: 'destory-db', method: :delete, data: { confirm: 'Are you sure?' } %></p>
   </div>
 </div>
 
