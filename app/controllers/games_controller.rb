@@ -4,6 +4,7 @@ require "json"
 require "open-uri"
 
 class GamesController < ApplicationController
+  #skip_before_action :set_game,
   before_action :set_game, only: [:show, :edit, :update, :destroy, :update_local_db]
 
   # GET /games
@@ -64,17 +65,23 @@ class GamesController < ApplicationController
     end
   end
 
-  # GET /games/destroy_db
+  # DELETE /games/destroy_db
   def destroy_db
     @games = Game.all
     @games.destroy_all
-    redirect_to games_url
+    respond_to do |format|
+      format.html { redirect_to games_url, notice: 'Games were successfully destroyed.' }
+      format.json { head :no_content }
+    end
   end
 
   # GET /games/update_db
   def update_db
     cycle_through_humble_database_worksheets()
-    redirect_to games_url
+    respond_to do |format|
+      format.html { redirect_to games_url, notice: 'Games were successfully added.' }
+      format.json { head :no_content }
+    end
   end
 
   private
@@ -96,6 +103,7 @@ class GamesController < ApplicationController
   end
 
   def pull_humble_database()
+    # A google API developer key is required
     session = GoogleDrive::Session.from_service_account_key(ENV['GOOGLE_API_KEY'])
     humble_spreadsheet = "1Y5ySEXPLZdmKFNdMOrGlCEVl6nb_G0X3nYCFSWIdktY"
     return ws_spreadsheet = session.spreadsheet_by_key(humble_spreadsheet)
@@ -120,21 +128,21 @@ class GamesController < ApplicationController
       date = Date.parse(ws[row, 1]).to_date.to_s
 
       # early unlock games
-      early_unlock = ws[row, 2].split(', ').map(&:strip)
+      (2..4).each do |col|
+        games_to_input = ws[row, col].split(', ').map(&:strip)
 
-      (0..early_unlock.size-1).each do |item|
-        humble_game_name = early_unlock[item]
-        steam_id = 1
-        steam_id = steam_hash_db[humble_game_name]
+        if games_to_input[0] == "N/A" # Skips empty bundles
+        else
+          (0..games_to_input.size-1).each do |item|
+            humble_game_name = games_to_input[item]
+            steam_id = steam_hash_db[humble_game_name]
 
-        if steam_id == 1
-          steam_id = (rand() * 10000).to_s
+            @game = Game.new(game_name: humble_game_name, humble_bundle: date, steam_appid: steam_id)
+            @game.save
+          end
         end
-
-        @game = Game.new(game_name: humble_game_name, humble_bundle: date, steam_appid: steam_id)
-        @game.save
       end
-      #
+
       # # other games
       # other_games = ws[row, 3].split(', ').map(&:strip)
       #
@@ -155,7 +163,6 @@ class GamesController < ApplicationController
       #     game = humble_origs[game]
       #     game_data.push({date: date, game: game, steam_appid: steam_appid})
       #   end
-      # end
     end
   end
 
