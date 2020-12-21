@@ -4,7 +4,7 @@
     <p class="lead">Manually <%= link_to 'add game', new_game_path, id: 'add-game' %></p>
     <p class="lead">Auto-update <%= link_to 'database', update_db_games_path, id: 'update-db' %></p>
     <p class="lead">Destroy all in <%= link_to 'database', destroy_db_games_path, data: { confirm: 'Are you sure?' }, id: 'destroy-db' %></p>
-    <p class="lead">Update failed <%= link_to 'games', show_failed_input_games_path, id: 'failed-db' %></p>
+    <p class="lead">Update failed <%= link_to 'games', show_failed_input_games_path, id: 'update-failed-db' %></p>
     <p class="lead">Number of games: <%= @games.count %></p>
   </div>
 </div>
@@ -16,7 +16,7 @@
         <th>Game name</th>
         <th>Month</th>
         <th>Steam ID</th>
-        <th colspan="3"></th>
+        <th colspan="4"></th>
       </tr>
     </thead>
 
@@ -29,6 +29,7 @@
           <td><%= link_to 'Show', game %></td>
           <td><%= link_to 'Edit', edit_game_path(game) %></td>
           <td><%= link_to 'Destroy', game, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          <td><%= link_to 'Find Steam ID', find_steam_id_game_path(game) %></td>
         </tr>
       <% end %>
     </tbody>

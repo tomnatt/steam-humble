@@ -45,7 +45,10 @@ class GamesController < ApplicationController
   # PATCH/PUT /games/1.json
   def update
     respond_to do |format|
-      if @game.update(game_params)
+      if @game.update(game_params) && params[:commit] == "Update Steam ID"
+        format.html { redirect_to @game, notice: 'Steam ID was successfully updated.' }
+        format.json { render :show_steam_updated, status: :ok, location: @game }
+      elsif @game.update(game_params)
         format.html { redirect_to @game, notice: 'Game was successfully updated.' }
         format.json { render :show, status: :ok, location: @game }
       else
@@ -84,6 +87,23 @@ class GamesController < ApplicationController
     end
   end
 
+  # GET /games/show_failed_input
+  def show_failed_input
+    @games = Game.where(steam_appid: nil)
+  end
+
+  # GET /games/1/find_steam_id
+  def find_steam_id
+    @game = Game.find(params[:id])
+    steam_hash_db = pull_steam_app_db()
+    game_name_string = @game.game_name[0..5]
+    @steam_id_options = steam_hash_db.select{ |k,v| k[game_name_string] }.to_a
+  end
+
+  def show_steam_updated
+    @game = Game.find(params[:id])
+  end
+
   private
 
   def pull_steam_app_db
@@ -102,23 +122,17 @@ class GamesController < ApplicationController
     return steam_data
   end
 
-  def pull_humble_database()
+  def pull_humble_database
     # A google API developer key is required
     session = GoogleDrive::Session.from_service_account_key(ENV['GOOGLE_API_KEY'])
     humble_spreadsheet = "1Y5ySEXPLZdmKFNdMOrGlCEVl6nb_G0X3nYCFSWIdktY"
     return ws_spreadsheet = session.spreadsheet_by_key(humble_spreadsheet)
   end
 
-  def cycle_through_humble_database_worksheets()
+  def cycle_through_humble_database_worksheets
     steam_hash_db = pull_steam_app_db()
     ws_spreadsheet = pull_humble_database()
     ws = ws_spreadsheet.worksheets[0]
-
-    # test1 = ws[2, 2].split(', ').map(&:strip)
-    # test2 = Date.parse(ws[2, 1]).to_date.to_s
-    # test3 = "122"
-    # @game = Game.new(game_name: test1[0], humble_bundle: test2, steam_appid: test3)
-    # @game.save
 
     #(0..ws_spreadsheet.worksheets.size - 1) each do |spreadsheet|
 
@@ -142,27 +156,6 @@ class GamesController < ApplicationController
           end
         end
       end
-
-      # # other games
-      # other_games = ws[row, 3].split(', ').map(&:strip)
-      #
-      # #if other_games.size > 1
-      #   (0..other_games.size-1).each do |game|
-      #     steam_appid = nil
-      #     game = other_games[game]
-      #     game_data.push({date: date, game: game, steam_appid: steam_appid})
-      #   end
-      #
-      # # humble originals
-      # humble_origs = ws[row, 4].split(', ').map(&:strip)
-      #
-      # if humble_origs.size == 1 && humble_origs[0] = "N/A" # skips bundles with no originals
-      # else
-      #   (0..humble_origs.size-1).each do |game|
-      #     steam_appid = nil
-      #     game = humble_origs[game]
-      #     game_data.push({date: date, game: game, steam_appid: steam_appid})
-      #   end
     end
   end
 
