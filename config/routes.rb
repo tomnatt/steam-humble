@@ -10,7 +10,6 @@ Rails.application.routes.draw do
     end
     member do
       get 'find_steam_id'
-      get 'show_steam_updated'
     end
   end
 

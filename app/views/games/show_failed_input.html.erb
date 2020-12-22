@@ -1,10 +1,10 @@
 <div class="row">
   <div class="col">
-    <h1>All games</h1>
+    <h1>Games with missing Steam IDs</h1>
     <p class="lead">Manually <%= link_to 'add game', new_game_path, id: 'add-game' %></p>
     <p class="lead">Auto-update <%= link_to 'database', update_db_games_path, id: 'update-db' %></p>
     <p class="lead">Destroy all in <%= link_to 'database', destroy_db_games_path, data: { confirm: 'Are you sure?' }, id: 'destroy-db' %></p>
-    <p class="lead">Update failed <%= link_to 'games', show_failed_input_games_path, id: 'update-failed-db' %></p>
+    <p class="lead">Back to <%= link_to 'full database', games_path, id: 'add-game' %></p>
     <p class="lead">Number of games: <%= @games.count %></p>
   </div>
 </div>
