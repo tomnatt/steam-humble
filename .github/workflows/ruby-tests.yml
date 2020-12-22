@@ -40,6 +40,9 @@ jobs:
     - name: Install Postgres dependencies
       run: sudo apt-get -yqq install libpq-dev
 
+    - name: Install Javascript dependencies
+      run: yarn install
+
     # - name: Setup test database
     #   env:
     #     PG_DATABASE: steam_humble_test
