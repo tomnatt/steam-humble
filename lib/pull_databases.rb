@@ -57,4 +57,15 @@ class PullDatabase
     end
   end
 
+  def self.steam_id_options_creator(game_name)
+    steam_hash_db = pull_steam_app_db()
+    if game_name == ""
+      steam_id_options = []
+    else
+      game_name_string = game_name[0..4]
+      steam_id_options = steam_hash_db.select { |k,v| k[game_name_string] }.sort_by { |k, v| k }
+    end
+
+    return steam_id_options.unshift(["Leave blank", nil])
+  end
 end

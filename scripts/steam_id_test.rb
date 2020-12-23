@@ -102,3 +102,14 @@ final_list = assign_steamid_to_humble_games(steam_id_db, humble_id_db)
 # Still to do
 # Known issue with some game names due to  - will need to fix
 # Still need to pull data from second worksheet and adapt as necessary
+
+
+  <div class="row mb-3">
+    <div class="col">
+      <div class="form-group">
+        <%= form.label :steam_appid_list %>
+        <%= form.select :steam_appid_list, options_for_select(@steam_id_options) %>
+        <small id="captionHelp" class="form-text text-muted">Or select from the list. Warning, this value takes priority! </small>
+      </div>
+    </div>
+  </div>

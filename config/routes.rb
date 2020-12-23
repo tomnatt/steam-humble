@@ -7,9 +7,6 @@ Rails.application.routes.draw do
       get 'update_db'
       get 'destroy_db'
     end
-    member do
-      get 'find_steam_id'
-    end
   end
 
 end

@@ -36,7 +36,8 @@
       <div class="form-group">
         <%= form.label :steam_appid %>
         <%= form.number_field :steam_appid, class: 'form-control' %>
-        <small id="captionHelp" class="form-text text-muted">The unique ID for the game on Steam</small>
+        <small id="captionHelp" class="form-text text-muted">Enter the unique ID for the game on Steam or select from list. Warning, list value takes priority unless left blank!</small>
+        <%= form.select :steam_appid_list, options_for_select(@steam_id_options) %>
       </div>
     </div>
   </div>
