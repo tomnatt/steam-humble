@@ -16,7 +16,7 @@
 <p>
   <%= link_to 'Edit', edit_game_path(@game) %> |
   <%= link_to 'Show database', games_path %> |
-  <%= link_to 'Show missing Steam IDs', show_failed_input_games_path %>
+  <%= link_to 'Show missing Steam IDs', games_path(view_param: 'failed-db') %>
 </p>
 <p>
   <%= link_to 'Add another game', new_game_path %>

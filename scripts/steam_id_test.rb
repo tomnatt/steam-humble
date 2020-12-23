@@ -34,7 +34,7 @@ def pull_humble_database
     date = Date.parse(ws[row, 1]).to_date.to_s
 
     # early unlock games
-    early_unlock = ws[row, 2].split(', ').map(&:strip)
+    early_unlock = ws[row, 2].split(', ').split(' OR ').map(&:strip)
 
     if early_unlock.size > 1
       (0..early_unlock.size-1).each do |game|

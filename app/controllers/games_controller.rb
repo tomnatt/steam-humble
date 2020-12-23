@@ -11,12 +11,21 @@ class GamesController < ApplicationController
   # GET /games
   # GET /games.json
   def index
-    @games = Game.all
+    if params[:view_param] == 'failed-db'
+      @games = Game.where(steam_appid: nil)
+    else
+      @games = Game.all
+    end
   end
 
   # GET /games/1
   # GET /games/1.json
-  def show; end
+  def show;
+    @game = Game.find(params[:id])
+    steam_hash_db = PullDatabase.pull_steam_app_db()
+    game_name_string = @game.game_name[0..4]
+    @steam_id_options = steam_hash_db.select{ |k,v| k[game_name_string] }.to_a
+  end
 
   # GET /games/new
   def new
@@ -86,11 +95,6 @@ class GamesController < ApplicationController
       format.html { redirect_to games_url, notice: 'Games were successfully added.' }
       format.json { head :no_content }
     end
-  end
-
-  # GET /games/show_failed_input
-  def show_failed_input
-    @games = Game.where(steam_appid: nil)
   end
 
   # GET /games/1/find_steam_id
