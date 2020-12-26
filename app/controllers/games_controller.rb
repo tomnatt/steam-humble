@@ -96,7 +96,7 @@ class GamesController < ApplicationController
 
   # GET /games/update_db
   def update_db
-    PullDatabase.cycle_through_humble_database_worksheets()
+    PullDatabase.rebuild_database()
     respond_to do |format|
       format.html { redirect_to games_url, notice: 'Games were successfully added.' }
       format.json { head :no_content }

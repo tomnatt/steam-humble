@@ -5,10 +5,9 @@ require "open-uri"
 
 
 def pull_steam_app_db
-  uri = 'http://api.steampowered.com/ISteamApps/GetAppList/v0002/'
-  steam_json_file = JSON.parse open(uri).read
+  uri = URI.open('http://api.steampowered.com/ISteamApps/GetAppList/v0002/')
+  steam_json_file = JSON.parse uri.read
   steam_json_file_raw = steam_json_file['applist']['apps']
-
   steam_data = {}
 
   (0..steam_json_file_raw.size).each do |app|
@@ -21,11 +20,19 @@ def pull_steam_app_db
   return steam_data
 end
 
-# requires a google API key
 def pull_humble_database
+  # A google API developer key is required
   session = GoogleDrive::Session.from_service_account_key(ENV['GOOGLE_API_KEY'])
   humble_spreadsheet = "1Y5ySEXPLZdmKFNdMOrGlCEVl6nb_G0X3nYCFSWIdktY"
-  ws = session.spreadsheet_by_key(humble_spreadsheet).worksheets[0]
+  return ws_spreadsheet = session.spreadsheet_by_key(humble_spreadsheet)
+end
+
+# requires a google API key
+def rebuild_database
+  steam_hash_db = pull_steam_app_db()
+  ws_spreadsheet = pull_humble_database()
+
+  ws = ws_spreadsheet.worksheets[0]
 
   game_data = []
 
@@ -34,82 +41,46 @@ def pull_humble_database
     date = Date.parse(ws[row, 1]).to_date.to_s
 
     # early unlock games
-    early_unlock = ws[row, 2].split(', ').split(' OR ').map(&:strip)
+    (2..4).each do |col|
+      games_to_input = ws[row, col].split(', ').map(&:strip)
 
-    if early_unlock.size > 1
-      (0..early_unlock.size-1).each do |game|
-        steam_appid = 1
-        game = early_unlock[game]
-        game_data.push({date: date, game: game, steam_appid: steam_appid})
+      if games_to_input[0] == "N/A" # Skips empty bundles
+      else
+        (0..games_to_input.size-1).each do |item|
+          humble_game_name = games_to_input[item]
+          steam_id = steam_hash_db[humble_game_name]
+          game_data.push({humble_bundle: date, game_name: humble_game_name, steam_appid: steam_id})
+        end
       end
-
-    else
-      steam_appid = 1
-      game = early_unlock[0]
-      game_data.push({date: date, game: game, steam_appid: steam_appid})
     end
+  end
 
-    # other games
-    other_games = ws[row, 3].split(', ').map(&:strip)
+  # Worksheet page 2 (1 in array) after Humble change
+  ws = ws_spreadsheet.worksheets[1]
 
-    if other_games.size > 1
-      (0..other_games.size-1).each do |game|
-        steam_appid = 1
-        game = other_games[game]
-        game_data.push({date: date, game: game, steam_appid: steam_appid})
+  (2..ws.num_rows).each do |row|
+    # date of humble bundle
+    date = Date.parse(ws[row, 1]).to_date.to_s
+
+    games_to_input = ws[row, 2].split(', ').map(&:strip)
+
+# remove money part
+      (0..games_to_input.size-1).each do |item|
+        name_and_cost = games_to_input[item].split(' ')
+        name_and_cost.pop
+        humble_game_name = name_and_cost.join(' ')
+        steam_id = steam_hash_db[humble_game_name]
+        game_data.push({humble_bundle: date, game_name: humble_game_name, steam_appid: steam_id})
       end
-
-    else
-      steam_appid = 1
-      game = other_games[0]
-      game_data.push({date: date, game: game, steam_appid: steam_appid})
-    end
-
-    # humble originals
-    humble_origs = ws[row, 4].split(', ').map(&:strip)
-
-    if humble_origs.size > 1
-      (0..humble_origs.size-1).each do |game|
-        steam_appid = 1
-        game = humble_origs[game]
-        game_data.push({date: date, game: game, steam_appid: steam_appid})
-      end
-
-    elsif humble_origs.size == 1 && humble_origs[0] = "N/A" # skips bundles with no originals
-    else
-      steam_appid = 1
-      game = humble_origs[0]
-      game_data.push({date: date, game: game, steam_appid: steam_appid})
-    end
-
   end
 
   return game_data
 end
 
-def assign_steamid_to_humble_games(steam_id_hash, humble_games_list)
-  (0..humble_games_list.size-1).each do |model|
-    humble_games_list[model][:steam_appid] = steam_id_hash[humble_games_list[model][:game]]
-  end
+final_list = rebuild_database()
 
-  return humble_games_list
-end
-
-steam_id_db = pull_steam_app_db()
-humble_id_db = pull_humble_database()
-final_list = assign_steamid_to_humble_games(steam_id_db, humble_id_db)
+p final_list.count
 
 # Still to do
 # Known issue with some game names due to  - will need to fix
 # Still need to pull data from second worksheet and adapt as necessary
-
-
-  <div class="row mb-3">
-    <div class="col">
-      <div class="form-group">
-        <%= form.label :steam_appid_list %>
-        <%= form.select :steam_appid_list, options_for_select(@steam_id_options) %>
-        <small id="captionHelp" class="form-text text-muted">Or select from the list. Warning, this value takes priority! </small>
-      </div>
-    </div>
-  </div>
