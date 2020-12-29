@@ -29,52 +29,77 @@ class PullDatabase
   end
 
 
-  def self.rebuild_database
+  def self.rebuild_database(incoming_date)
+    if incoming_date == 1
+      last_date = incoming_date.to_i
+    else
+      last_date = incoming_date.to_time.to_i
+    end
+
+    number_of_games = 0
+    game_errors = []
+
     steam_hash_db = pull_steam_app_db()
     ws_spreadsheet = pull_humble_database()
 
-    ws = ws_spreadsheet.worksheets[0]
-
-    (2..ws.num_rows).each do |row|
-
-      date = Date.parse(ws[row, 1]).to_date.to_s
-
-      # All games - excludes comics and other columns on humble sheet
-      (2..4).each do |col|
-        games_to_input = ws[row, col].split(', ').map(&:strip)
-
-        if games_to_input[0] == "N/A" # Skips empty bundles
-        else
-          (0..games_to_input.size-1).each do |item|
-            humble_game_name = games_to_input[item]
-            steam_id = steam_hash_db[humble_game_name]
-
-            @game = Game.new(game_name: humble_game_name, humble_bundle: date, steam_appid: steam_id)
-            @game.save
-          end
-        end
-      end
-    end
 
     ws = ws_spreadsheet.worksheets[1]
 
     (2..ws.num_rows).each do |row|
 
       date = Date.parse(ws[row, 1]).to_date.to_s
+      if last_date >= Date.parse(ws[row, 1]).to_time.to_i
+        next
+      end
 
       games_to_input = ws[row, 2].split(', ').map(&:strip)
 
       # Takes name and removes money part
-      (0..games_to_input.size-1).each do |item|
-        name_and_cost = games_to_input[item].split(' ')
+      games_to_input.each do |item|
+        name_and_cost = item.split(' ')
         name_and_cost.pop
         humble_game_name = name_and_cost.join(' ')
         steam_id = steam_hash_db[humble_game_name]
 
         @game = Game.new(game_name: humble_game_name, humble_bundle: date, steam_appid: steam_id)
-        @game.save
+        if @game.save
+          number_of_games = number_of_games + 1
+        else
+          game_errors.push(@game)
+        end
       end
     end
+
+    if last_date == 1
+      ws = ws_spreadsheet.worksheets[0]
+      (2..ws.num_rows).each do |row|
+
+        date = Date.parse(ws[row, 1]).to_date.to_s
+
+        # All games - excludes comics and other columns on humble sheet
+        (2..4).each do |col|
+          games_to_input = ws[row, col].split(', ').map(&:strip)
+
+          if games_to_input[0] == "N/A" # Skips empty bundles
+          else
+            games_to_input.each do |item|
+              humble_game_name = item
+              steam_id = steam_hash_db[item]
+
+              @game = Game.new(game_name: humble_game_name, humble_bundle: date, steam_appid: steam_id)
+              if @game.save
+                number_of_games = number_of_games + 1
+              else
+                game_errors.push(@game)
+              end
+            end
+          end
+        end
+      end
+    else
+    end
+
+    return [number_of_games, game_errors]
   end
 
 

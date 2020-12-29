@@ -4,8 +4,9 @@ Rails.application.routes.draw do
   root to: 'games#index'
   resources :games do
     collection do
-      get 'update_db'
+      get 'rebuild_db'
       get 'destroy_db'
+      get 'update_db'
     end
   end
 

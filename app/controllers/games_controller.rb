@@ -94,12 +94,44 @@ class GamesController < ApplicationController
     end
   end
 
+  # GET /games/rebuild_db
+  def rebuild_db
+    variable_returned = PullDatabase.rebuild_database(1)
+    failed_games = variable_returned[1]
+    @number_of_failed_games = failed_games.count
+    if failed_games.blank?
+      respond_to do |format|
+        format.html { redirect_to games_path, notice: "Database was successfully rebuilt. #{variable_returned[0]} games added. No errors." }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to games_path(view_param: 'any_errors', failed_param: @number_of_failed_games), notice: "Database was rebuilt. #{variable_returned[0]} games added." }
+        format.json { head :no_content }
+      end
+    end
+  end
+
   # GET /games/update_db
   def update_db
-    PullDatabase.rebuild_database()
-    respond_to do |format|
-      format.html { redirect_to games_url, notice: 'Games were successfully added.' }
-      format.json { head :no_content }
+    @game = Game.order('humble_bundle DESC').first
+    if @game.blank?
+      variable_returned = PullDatabase.rebuild_database(1)
+    else
+      variable_returned = PullDatabase.rebuild_database(@game.humble_bundle)
+    end
+    failed_games = variable_returned[1]
+    @number_of_failed_games = failed_games.count
+    if failed_games.blank?
+      respond_to do |format|
+        format.html { redirect_to games_path(view_param: 'any_errors'), notice: "#{variable_returned[0]} games were successfully added. No errors." }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to games_path(view_param: 'any_errors', failed_param: @number_of_failed_games), notice: "Database was rebuilt. #{variable_returned[0]} games added." }
+        format.json { head :no_content }
+      end
     end
   end
 
