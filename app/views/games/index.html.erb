@@ -11,6 +11,14 @@
       <% else %>
         <div id="error_explanation" class="alert alert-danger">
           <h2 class="alert-heading"><%= pluralize(params[:failed_param], "game") %> were not saved. </h2>
+          <ul>
+          <% if flash[:flash_failed_games_names] %>
+            <% failed_games_names = flash[:flash_failed_games_names] %>
+            <% failed_games_names.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          <% end %>
+          </ul>
         </div>
       <% end %>
     <% end %>

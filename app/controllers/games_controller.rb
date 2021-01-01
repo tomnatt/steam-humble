@@ -99,6 +99,7 @@ class GamesController < ApplicationController
     variable_returned = PullDatabase.rebuild_database(1)
     failed_games = variable_returned[1]
     @number_of_failed_games = failed_games.count
+    failed_games_names = []
     if failed_games.blank?
       respond_to do |format|
         format.html { redirect_to games_path, notice: "Database was successfully rebuilt. #{variable_returned[0]} games added. No errors." }
@@ -106,6 +107,12 @@ class GamesController < ApplicationController
       end
     else
       respond_to do |format|
+        failed_games.each {|failed_game| failed_games_names.push(failed_game.game_name) }
+        if @number_of_failed_games < 5
+          flash[:flash_failed_games_names] = failed_games_names
+        else
+          flash[:flash_failed_games_names] = failed_games_names[0..4].push("And #{failed_games_names.count-5} other games.")
+        end
         format.html { redirect_to games_path(view_param: 'any_errors', failed_param: @number_of_failed_games), notice: "Database was rebuilt. #{variable_returned[0]} games added." }
         format.json { head :no_content }
       end
@@ -121,6 +128,7 @@ class GamesController < ApplicationController
       variable_returned = PullDatabase.rebuild_database(@game.humble_bundle)
     end
     failed_games = variable_returned[1]
+    failed_games_names = []
     @number_of_failed_games = failed_games.count
     if failed_games.blank?
       respond_to do |format|
@@ -129,6 +137,12 @@ class GamesController < ApplicationController
       end
     else
       respond_to do |format|
+        failed_games.each {|failed_game| failed_games_names.push(failed_game.game_name) }
+        if @number_of_failed_games < 5
+          flash[:flash_failed_games_names] = failed_games_names
+        else
+          flash[:flash_failed_games_names] = failed_games_names[0..4].push("And #{failed_games_names.count-5} other games.")
+        end
         format.html { redirect_to games_path(view_param: 'any_errors', failed_param: @number_of_failed_games), notice: "Database was rebuilt. #{variable_returned[0]} games added." }
         format.json { head :no_content }
       end
