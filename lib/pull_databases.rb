@@ -52,7 +52,7 @@ class PullDatabase
         next
       end
 
-      games_to_input = ws[row, 2].split(', ').map(&:strip)
+      games_to_input = ws[row, 2].split('; ').map(&:strip)
 
       # Takes name and removes money part
       games_to_input.each do |item|
@@ -78,7 +78,7 @@ class PullDatabase
 
         # All games - excludes comics and other columns on humble sheet
         (2..4).each do |col|
-          games_to_input = ws[row, col].split(', ').map(&:strip)
+          games_to_input = ws[row, col].split('; ').map(&:strip)
 
           if games_to_input[0] == "N/A" # Skips empty bundles
           else
