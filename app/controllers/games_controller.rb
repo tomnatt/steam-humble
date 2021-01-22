@@ -1,12 +1,11 @@
-require "date"
-require "google_drive"
-require "json"
-require "open-uri"
+require 'date'
+require 'google_drive'
+require 'json'
+require 'open-uri'
 require 'pull_databases'
 
 class GamesController < ApplicationController
-  #skip_before_action :set_game,
-  before_action :set_game, only: [:show, :edit, :update, :destroy, :update_local_db]
+  before_action :set_game, only: [:show, :edit, :update, :destroy]
 
   # GET /games
   # GET /games.json
@@ -24,12 +23,12 @@ class GamesController < ApplicationController
 
   # GET /games/new
   def new
-    @steam_id_options = [["Leave blank", nil]]
+    @steam_id_options = [['Leave blank', nil]]
     @game = Game.new
   end
 
   # GET /games/1/edit
-  def edit;
+  def edit
     @game = Game.find(params[:id])
     @steam_id_options = PullDatabase.steam_id_options_creator(@game.game_name)
   end
@@ -47,7 +46,7 @@ class GamesController < ApplicationController
         format.html { redirect_to @game, notice: 'Game was successfully created.' }
         format.json { render :show, status: :created, location: @game }
       else
-        @steam_id_options = PullDatabase.steam_id_options_creator("")
+        @steam_id_options = PullDatabase.steam_id_options_creator('')
         format.html { render :new }
         format.json { render json: @game.errors, status: :unprocessable_entity }
       end
@@ -67,7 +66,7 @@ class GamesController < ApplicationController
         format.html { redirect_to @game, notice: 'Game was successfully updated.' }
         format.json { render :show, status: :ok, location: @game }
       else
-        @steam_id_options = PullDatabase.steam_id_options_creator("")
+        @steam_id_options = PullDatabase.steam_id_options_creator('')
         format.html { render :edit }
         format.json { render json: @game.errors, status: :unprocessable_entity }
       end
@@ -102,18 +101,26 @@ class GamesController < ApplicationController
     failed_games_names = []
     if failed_games.blank?
       respond_to do |format|
-        format.html { redirect_to games_path, notice: "Database was successfully rebuilt. #{variable_returned[0]} games added. No errors." }
+        format.html {
+          redirect_to games_path,
+          notice: "Database was successfully rebuilt. #{variable_returned[0]} games added. No errors."
+        }
         format.json { head :no_content }
       end
     else
       respond_to do |format|
-        failed_games.each {|failed_game| failed_games_names.push(failed_game.game_name) }
+        failed_games.each { |failed_game| failed_games_names.push(failed_game.game_name) }
         if @number_of_failed_games < 5
           flash[:flash_failed_games_names] = failed_games_names
         else
-          flash[:flash_failed_games_names] = failed_games_names[0..4].push("And #{failed_games_names.count-5} other games.")
+          flash[:flash_failed_games_names] = failed_games_names[0..4].push(
+            "And #{failed_games_names.count - 5} other games."
+          )
         end
-        format.html { redirect_to games_path(view_param: 'any_errors', failed_param: @number_of_failed_games), notice: "Database was rebuilt. #{variable_returned[0]} games added." }
+        format.html {
+          redirect_to games_path(view_param: 'any_errors', failed_param: @number_of_failed_games),
+          notice: "Database was rebuilt. #{variable_returned[0]} games added."
+        }
         format.json { head :no_content }
       end
     end
@@ -132,7 +139,10 @@ class GamesController < ApplicationController
     @number_of_failed_games = failed_games.count
     if failed_games.blank?
       respond_to do |format|
-        format.html { redirect_to games_path(view_param: 'any_errors'), notice: "#{variable_returned[0]} games were successfully added. No errors." }
+        format.html {
+          redirect_to games_path(view_param: 'any_errors'),
+          notice: "#{variable_returned[0]} games were successfully added. No errors."
+        }
         format.json { head :no_content }
       end
     else
@@ -141,9 +151,14 @@ class GamesController < ApplicationController
         if @number_of_failed_games < 5
           flash[:flash_failed_games_names] = failed_games_names
         else
-          flash[:flash_failed_games_names] = failed_games_names[0..4].push("And #{failed_games_names.count-5} other games.")
+          flash[:flash_failed_games_names] = failed_games_names[0..4].push(
+            "And #{failed_games_names.count-5} other games."
+          )
         end
-        format.html { redirect_to games_path(view_param: 'any_errors', failed_param: @number_of_failed_games), notice: "Database was rebuilt. #{variable_returned[0]} games added." }
+        format.html {
+          redirect_to games_path(view_param: 'any_errors', failed_param: @number_of_failed_games),
+          notice: "Database was rebuilt. #{variable_returned[0]} games added."
+        }
         format.json { head :no_content }
       end
     end
@@ -160,5 +175,4 @@ class GamesController < ApplicationController
   def game_params
     params.require(:game).permit(:steam_appid, :game_name, :humble_bundle)
   end
-
 end
