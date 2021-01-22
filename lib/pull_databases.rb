@@ -3,6 +3,7 @@ require 'google_drive'
 require 'json'
 require 'open-uri'
 
+# rubocop:disable Metrics/BlockLength
 class PullDatabase
   def self.pull_steam_app_db
     uri = URI.open('http://api.steampowered.com/ISteamApps/GetAppList/v0002/')
@@ -20,14 +21,12 @@ class PullDatabase
     steam_data
   end
 
-
   def self.pull_humble_database
     # A google API developer key is required
     session = GoogleDrive::Session.from_service_account_key(ENV['GOOGLE_API_KEY'])
     humble_spreadsheet = '1Y5ySEXPLZdmKFNdMOrGlCEVl6nb_G0X3nYCFSWIdktY'
     session.spreadsheet_by_key(humble_spreadsheet)
   end
-
 
   def self.rebuild_database(incoming_date)
     if incoming_date == 1
@@ -42,11 +41,9 @@ class PullDatabase
     steam_hash_db = pull_steam_app_db
     ws_spreadsheet = pull_humble_database
 
-
     ws = ws_spreadsheet.worksheets[1]
 
     (2..ws.num_rows).each do |row|
-
       date = Date.parse(ws[row, 1]).to_date.to_s
       next if last_date >= Date.parse(ws[row, 1]).to_time.to_i
 
@@ -114,3 +111,4 @@ class PullDatabase
     steam_id_options.unshift(['Leave blank', nil])
   end
 end
+# rubocop:enable Metrics/BlockLength

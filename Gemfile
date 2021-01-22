@@ -20,8 +20,8 @@ gem 'jbuilder', '~> 2.7'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 gem 'date'
-gem 'inflector'
 gem 'google_drive'
+gem 'inflector'
 gem 'json'
 gem 'open-uri'
 

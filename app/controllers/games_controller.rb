@@ -147,12 +147,12 @@ class GamesController < ApplicationController
       end
     else
       respond_to do |format|
-        failed_games.each {|failed_game| failed_games_names.push(failed_game.game_name) }
+        failed_games.each { |failed_game| failed_games_names.push(failed_game.game_name) }
         if @number_of_failed_games < 5
           flash[:flash_failed_games_names] = failed_games_names
         else
           flash[:flash_failed_games_names] = failed_games_names[0..4].push(
-            "And #{failed_games_names.count-5} other games."
+            "And #{failed_games_names.count - 5} other games."
           )
         end
         format.html {
