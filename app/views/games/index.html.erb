@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col">
     <h1><%= if params[:view_param] == 'failed-db'
-        "Failed Games"
+        "Games without IDs"
       else
         "All Games"
       end %>
@@ -22,12 +22,12 @@
         </div>
       <% end %>
     <% end %>
-    <p class="lead">Manually <%= link_to 'add game', new_game_path, id: 'add-game' %></p>
-    <p class="lead">Rebuild <%= link_to 'database', rebuild_db_games_path, id: 'rebuild-db' %></p>
-    <p class="lead">Update <%= link_to 'database', update_db_games_path, id: 'update-db' %></p>
-    <p class="lead">Destroy <%= link_to 'database', destroy_db_games_path, data: { confirm: 'Are you sure?' }, id: 'destroy-db' %></p>
-    <p class="lead">Show database: <%= link_to 'Full', games_path, id: 'full-db' %> |
-      <%= link_to 'Failed', games_path(view_param: 'failed-db'), id: 'failed-db' %></p>
+    <p class="lead">Manually <%= link_to 'add game', new_game_path, id: 'add-game' %> - Add a game manually.</p>
+    <p class="lead">Rebuild <%= link_to 'database', rebuild_db_games_path, id: 'rebuild-db' %> - Rebuilds entire database.</p>
+    <p class="lead">Update <%= link_to 'database', update_db_games_path, id: 'update-db' %> - Updates database from most recent month.</p>
+    <p class="lead">Destroy <%= link_to 'database', destroy_db_games_path, data: { confirm: 'Are you sure?' }, id: 'destroy-db' %> - Deletes entire database.</p>
+    <p class="lead">Show database: <%= link_to 'All games', games_path, id: 'full-db' %> |
+      <%= link_to 'Games without IDs', games_path(view_param: 'failed-db'), id: 'failed-db' %></p>
     <p class="lead">Number of games: <%= @games.count %></p>
   </div>
 </div>
